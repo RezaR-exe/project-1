@@ -1,7 +1,9 @@
-function PostsShow(){
+function PostsShow(props){
     return(
         <div>
-            <h1>Posts show</h1>
+            <h1>{props.title}</h1>
+            <p>{props.content}</p>
+            <p>{props.id}</p>
         </div>
     )
 };
