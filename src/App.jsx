@@ -1,13 +1,15 @@
 import PostsList from "./components/Postslist";
 import PostsCreate from "./components/PostsCreate";
+import PanelList from "./components/PanelList";
+import "./styles/style.css";
 
 
 function App() {
 
     return (
         <div>
-            <h1>Hello World</h1>
-            <PostsCreate />
+            <PanelList />
+            {/* <PostsCreate /> */}
             <PostsList />
         </div>
     )

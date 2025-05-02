@@ -7,7 +7,7 @@ function PostsList(){
     const renderedPosts = posts.map((item) => <PostsShow title={item.title} content={item.content} id={item.id} key={item.id} />)
 
     return(
-        <div>
+        <div className="post-list">
             {renderedPosts}
         </div>
     )
