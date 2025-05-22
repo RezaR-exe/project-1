@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useDispatch } from 'react-redux';
+import { fetchUser } from "../store/store";
 
 
 function Login() {
+    const dispatch = useDispatch();
     const [userLoginData, setUserLoginData] = useState({
         email: "",
         password: ""
@@ -15,19 +18,21 @@ function Login() {
         }
     }
 
-    const handleForm = (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
+        dispatch(fetchUser({email: userLoginData.email, password: userLoginData.password}));
     }
 
 
     return (
         <div>
             <h1>Welcome to Login page</h1>
-            <form onSubmit={handleForm}>
+            <form onSubmit={handleSubmit}>
                 <label htmlFor="email">Email: </label>
                 <input onChange={handleChange} name="email" id="email" value={userLoginData.email} type="email" />
                 <label htmlFor="password">Password: </label>
                 <input onChange={handleChange} name="password" id="password" value={userLoginData.password} type="password" />
+                <button>Submit</button>
             </form>
         </div>
     )

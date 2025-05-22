@@ -30,11 +30,26 @@ app.post("/import", (req, res) => {
     res.send("post added")
 })
 
+app.post("/login", async (req, res) => {
+    try {
+        const foundUser = await db.query("SELECT * FROM users WHERE email = $1", [req.body.email])
+        if (foundUser) {
+            if (foundUser.rows[0].password === req.body.password) {
+                res.send(foundUser.rows[0])
+            } else {
+                res.send(false)
+            }
+        }
+    } catch (error) {
+        console.error(error)
+        res.send("Could not find user with specified email, watch for typos or try registering!")
+    }
+})
+
 app.post("/register", (req, res) => {
     db.query("INSERT INTO users(user_email, user_password) VALUES($1, $2)", [req.body.email, req.body.password])
     res.send("user registered")
 })
-
 
 app.listen(port, () => {
     console.log("listening to port 8080")
