@@ -9,11 +9,12 @@ const addUser = createAsyncThunk(
             email: userData.email,
             first_name: userData.first_name,
             last_name: userData.last_name,
-            nickName: userData.nickName,
-            birth: userData.birth,
+            nickname: userData.nickname,
+            birth_date: userData.birth_date,
             password: userData.password
         }).then(response => {
-            console.log("user succsesfully registered", response.data)
+            console.log(response.data)
+            return true
         }).catch(error => {
             console.error("error", error)
         })

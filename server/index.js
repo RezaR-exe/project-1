@@ -35,7 +35,7 @@ app.post("/login", async (req, res) => {
         const foundUser = await db.query("SELECT * FROM users WHERE email = $1", [req.body.email])
         if (foundUser) {
             if (foundUser.rows[0].password === req.body.password) {
-                res.send(foundUser.rows[0])
+                res.send(true)
             } else {
                 res.send(false)
             }
@@ -46,9 +46,31 @@ app.post("/login", async (req, res) => {
     }
 })
 
-app.post("/register", (req, res) => {
-    db.query("INSERT INTO users(user_email, user_password) VALUES($1, $2)", [req.body.email, req.body.password])
-    res.send("user registered")
+app.post("/register", async (req, res) => {
+    try {
+        const users = await db.query("SELECT * FROM users")
+        for (let i=0;i<users.rows.length;i++) {
+            if (req.body.email === users.rows[i].email) {
+                res.send("Email already registered, please login or reset your password if forgotten!")
+                break;
+            } else {
+                try {
+                    db.query("INSERT INTO users(email, first_name, last_name, nickname, birth_date, password) VALUES($1, $2, $3, $4, $5, $6)", [req.body.email, req.body.first_name, req.body.last_name, req.body.nickname, req.body.birth_date, req.body.password])
+                    res.send("user registered")
+                    break;
+                } catch(error) {
+                    console.error("db error, try again later")
+                    break;
+                }
+                
+            }
+        }
+    } catch (error) {
+        console.error(error)
+    }
+
+
+    
 })
 
 app.listen(port, () => {
