@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import pg from "pg";
+// import jwt from "jsonwebtoken";
 
 
 const app = express()
@@ -35,7 +36,7 @@ app.post("/login", async (req, res) => {
         const foundUser = await db.query("SELECT * FROM users WHERE email = $1", [req.body.email])
         if (foundUser) {
             if (foundUser.rows[0].password === req.body.password) {
-                res.send(true)
+                res.send(foundUser.rows[0])
             } else {
                 res.send(false)
             }
@@ -51,8 +52,7 @@ app.post("/register", async (req, res) => {
         const users = await db.query("SELECT * FROM users")
         for (let i=0;i<users.rows.length;i++) {
             if (req.body.email === users.rows[i].email) {
-                res.send("Email already registered, please login or reset your password if forgotten!")
-                break;
+                return res.status(400).json({ error: "Email already registered!" })
             } else {
                 try {
                     db.query("INSERT INTO users(email, first_name, last_name, nickname, birth_date, password) VALUES($1, $2, $3, $4, $5, $6)", [req.body.email, req.body.first_name, req.body.last_name, req.body.nickname, req.body.birth_date, req.body.password])

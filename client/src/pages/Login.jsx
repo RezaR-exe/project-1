@@ -1,9 +1,12 @@
-import { useState } from "react";
-import { useDispatch } from 'react-redux';
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from "../store/store";
+import { useNavigate } from "react-router";
 
 
 function Login() {
+    const navigate = useNavigate()
+    const users = useSelector((state) => state.users)
     const dispatch = useDispatch();
     const [userLoginData, setUserLoginData] = useState({
         email: "",
@@ -22,6 +25,12 @@ function Login() {
         event.preventDefault();
         dispatch(fetchUser({email: userLoginData.email, password: userLoginData.password}));
     }
+
+    useEffect(() => {
+        if (users.isUserLoggedIn) {
+            navigate("/")
+        }
+    }, [users])
 
 
     return (

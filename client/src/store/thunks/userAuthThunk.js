@@ -4,35 +4,38 @@ import axios from "axios";
 
 const addUser = createAsyncThunk(
     "user/addUser",
-    async (userData) => {
-        await axios.post("http://localhost:8080/register", {
-            email: userData.email,
-            first_name: userData.first_name,
-            last_name: userData.last_name,
-            nickname: userData.nickname,
-            birth_date: userData.birth_date,
-            password: userData.password
-        }).then(response => {
-            console.log(response.data)
-            return true
-        }).catch(error => {
-            console.error("error", error)
-        })
+    async (userData, thunkAPI) => {
+        try {
+            const response = await axios.post("http://localhost:8080/register", {
+                email: userData.email,
+                first_name: userData.first_name,
+                last_name: userData.last_name,
+                nickname: userData.nickname,
+                birth_date: userData.birth_date,
+                password: userData.password
+            });
+            return response.data
+        } catch (error) {
+            console.error("Registration error:", error.response?.data || error.message);
+            return thunkAPI.rejectWithValue(error.response?.data?.message || "Registration failed");
+        }
     }
 )
 
 const fetchUser = createAsyncThunk(
     "user/fetchUser",
     async (userData) => {
-        await axios.post("http://localhost:8080/login", {
+        try {
+            const response = await axios.post("http://localhost:8080/login", {
             email: userData.email,
             password: userData.password
-        }).then(response => {
-            console.log(response.data)
-        }).catch(error => {
-            console.error("error", error)
-        })
-    } 
+            })
+            return response.data
+        } catch(error) {
+            console.error("Registration error:", error.response?.data || error.message);
+            return thunkAPI.rejectWithValue(error.response?.data?.message || "Registration failed");
+        }
+    }
 )
 
 

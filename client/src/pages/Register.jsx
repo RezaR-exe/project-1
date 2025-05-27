@@ -1,9 +1,12 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../store/store";
+import { useNavigate } from "react-router";
 
 
 function Register() {
+    const users = useSelector((state) => state.users)
+    const navigate = useNavigate()
     const dispatch = useDispatch();
     const [userRegisterData, setUserRegisterData] = useState({
         email: "",
@@ -36,10 +39,24 @@ function Register() {
                 break;
         }
     }
-    const handleForm = (event) => {
+
+    const handleForm = async (event) => {
         event.preventDefault();
-        dispatch(addUser(userRegisterData))
+
+        try {
+            await dispatch(addUser(userRegisterData)).unwrap();
+            navigate("/login")
+        } catch (err) {
+            console.error(err)
+        }
     }
+
+
+    useEffect(() => {
+        if (users.isUserLoggedIn) {
+            navigate("/")
+        }
+    }, [users])
 
 
     return (
