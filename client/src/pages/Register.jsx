@@ -14,6 +14,7 @@ function Register() {
         last_name: "",
         nickname: "",
         birth_date: "",
+        location: "",
         password: ""
     });
 
@@ -33,6 +34,9 @@ function Register() {
                 break;
             case "birth_date":
                 setUserRegisterData({...userRegisterData, birth_date: event.target.value});
+                break;
+            case "location":
+                setUserRegisterData({...userRegisterData, location: event.target.value});
                 break;
             case "password":
                 setUserRegisterData({...userRegisterData, password: event.target.value});
@@ -73,6 +77,8 @@ function Register() {
                 <input onChange={handleChange} name="nickname" id="nickname" value={userRegisterData.nickname} type="text" required />
                 <label htmlFor="birth_date">Birth Date: </label>
                 <input onChange={handleChange} name="birth_date" id="birth_date" value={userRegisterData.birth_date} type="date" required />
+                <label htmlFor="location">Location: </label>
+                <input onChange={handleChange} name="location" id="location" value={userRegisterData.location} type="text" required />
                 <label htmlFor="password">Password: </label>
                 <input onChange={handleChange} name="password" id="password" value={userRegisterData.password} type="password" required />
                 <button>Submit</button>

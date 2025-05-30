@@ -62,16 +62,19 @@ app.post("/register", async (req, res) => {
                     console.error("db error, try again later")
                     break;
                 }
-                
             }
         }
     } catch (error) {
         console.error(error)
     }
-
-
-    
 })
+
+
+app.post("/edit-user", async (req, res) => {
+    const updateData = await db.query("UPDATE users SET first_name=$1, last_name=$2, nickname=$3, location=$4, bio=$5, birth_date=$6 WHERE email=$7", [req.body.first_name, req.body.last_name, req.body.nickname, req.body.bio, req.body.birth_date, req.body.email])
+    return res.status(200).json({error: "User data edited."})
+})
+
 
 app.listen(port, () => {
     console.log("listening to port 8080")

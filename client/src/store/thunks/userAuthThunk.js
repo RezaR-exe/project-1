@@ -24,7 +24,7 @@ const addUser = createAsyncThunk(
 
 const fetchUser = createAsyncThunk(
     "user/fetchUser",
-    async (userData) => {
+    async (userData, thunkAPI) => {
         try {
             const response = await axios.post("http://localhost:8080/login", {
             email: userData.email,
@@ -39,4 +39,25 @@ const fetchUser = createAsyncThunk(
 )
 
 
-export { fetchUser, addUser }
+const editUserData = createAsyncThunk(
+    "user/editUser",
+    async (userData, thunkAPI) => {
+        try {
+            const response = await axios.post("http://localhost:8080/edit-user", {
+                first_name: userData.first_name,
+                last_name: userData.last_name,
+                nickname: userData.nickname,
+                birth_date: userData.birth_date,
+                location: userData.location,
+                email: userData.email
+            })
+            return response.data
+        } catch(error) {
+            console.error(error);
+            return thunkAPI.rejectWithValue(error.response?.data?.message || "Registration failed");
+        }
+    } 
+)
+
+
+export { fetchUser, addUser, editUserData }
