@@ -1,9 +1,12 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createPost } from '../store/store';
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router';
 
 
 function PostsCreate(){
+    const navigate = useNavigate();
+    const user = useSelector((state) => state.users)
     const [postObject, setPostObject] = useState({});
     const dispatch = useDispatch();
 
@@ -17,8 +20,14 @@ function PostsCreate(){
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        dispatch(createPost({post_title: postObject.title, post_content: postObject.content}))
+        dispatch(createPost({post_title: postObject.title, post_content: postObject.content, postedBy: user.userData.nickname}))
     }
+
+    useEffect(() => {
+        if (user.isUserLoggedIn != true) {
+            navigate("/")
+        }
+    }, [user])
 
 
     return(

@@ -21,7 +21,8 @@ const createPost = createAsyncThunk(
         try {
             const response = await axios.post("http://localhost:8080/import", {
             title: data.post_title,
-            content: data.post_content
+            content: data.post_content,
+            postedBy: data.postedBy
             })
             return response.data
         } catch(error) {

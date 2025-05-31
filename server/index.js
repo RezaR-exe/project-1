@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import pg from "pg";
-// import jwt from "jsonwebtoken";
 
 
 const app = express()
@@ -22,28 +21,36 @@ const db = new pg.Client({
 db.connect();
 
 app.get("/export", async (req, res) => {
-    const result = await db.query("SELECT * FROM posts")
-    res.send(result.rows)
+    try{
+        const result = await db.query("SELECT * FROM posts")
+        res.send(result.rows)
+    } catch(error) {
+        return res.status(400).json({error: "could not retrieve posts from database, server might be down, try again later"})
+    }
 })
 
 app.post("/import", (req, res) => {
-    db.query("INSERT INTO posts(post_title, post_content) VALUES($1, $2)", [req.body.title, req.body.content])
-    res.send("post added")
+    try {
+        db.query("INSERT INTO posts(post_title, post_content, postedBy) VALUES($1, $2, $3)", [req.body.title, req.body.content, req.body.postedBy]);
+        return res.status(200).json({info: "post added"});
+    } catch(error) {
+        return res.status(400).json({error: "post not added, check boxes or try again later"});
+    }
 })
 
 app.post("/login", async (req, res) => {
     try {
-        const foundUser = await db.query("SELECT * FROM users WHERE email = $1", [req.body.email])
+        const foundUser = await db.query("SELECT * FROM users WHERE email = $1", [req.body.email]);
         if (foundUser) {
             if (foundUser.rows[0].password === req.body.password) {
                 res.send(foundUser.rows[0])
             } else {
-                res.send(false)
+                return res.status(400).json({error: "Incorrect email or password!"});
             }
         }
     } catch (error) {
         console.error(error)
-        res.send("Could not find user with specified email, watch for typos or try registering!")
+        return res.status(400).json({error: "Could not find user with specified email, watch for typos or try registering!"});
     }
 })
 
@@ -52,30 +59,28 @@ app.post("/register", async (req, res) => {
         const users = await db.query("SELECT * FROM users")
         for (let i=0;i<users.rows.length;i++) {
             if (req.body.email === users.rows[i].email) {
-                return res.status(400).json({ error: "Email already registered!" })
+                return res.status(400).json({ error: "Email already registered!" });
             } else {
                 try {
-                    db.query("INSERT INTO users(email, first_name, last_name, nickname, birth_date, password) VALUES($1, $2, $3, $4, $5, $6)", [req.body.email, req.body.first_name, req.body.last_name, req.body.nickname, req.body.birth_date, req.body.password])
-                    res.send("user registered")
-                    break;
+                    db.query("INSERT INTO users(email, first_name, last_name, nickname, birth_date, password) VALUES($1, $2, $3, $4, $5, $6)", [req.body.email, req.body.first_name, req.body.last_name, req.body.nickname, req.body.birth_date, req.body.password]);
+                    return res.status(200).json({info: "user registered"});
                 } catch(error) {
-                    console.error("db error, try again later")
-                    break;
+                    return res.status(400).json({error: "db error, try again later!"});
                 }
             }
         }
     } catch (error) {
-        console.error(error)
+        return res.status(400).json({error: "Could not establish connection with the database, try again later!"});
     }
 })
 
 
 app.post("/edit-user", async (req, res) => {
-    const updateData = await db.query("UPDATE users SET first_name=$1, last_name=$2, nickname=$3, location=$4, bio=$5, birth_date=$6 WHERE email=$7", [req.body.first_name, req.body.last_name, req.body.nickname, req.body.bio, req.body.birth_date, req.body.email])
-    return res.status(200).json({error: "User data edited."})
+    const updateData = await db.query("UPDATE users SET first_name=$1, last_name=$2, nickname=$3, location=$4, bio=$5, birth_date=$6 WHERE email=$7", [req.body.first_name, req.body.last_name, req.body.nickname, req.body.location, req.body.bio, req.body.birth_date, req.body.email]);
+    return res.status(200).json({info: "User data edited."});
 })
 
 
 app.listen(port, () => {
-    console.log("listening to port 8080")
+    console.log("listening to port 8080");
 })

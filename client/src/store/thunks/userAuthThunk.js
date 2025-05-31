@@ -49,6 +49,7 @@ const editUserData = createAsyncThunk(
                 nickname: userData.nickname,
                 birth_date: userData.birth_date,
                 location: userData.location,
+                bio: userData.bio,
                 email: userData.email
             })
             return response.data

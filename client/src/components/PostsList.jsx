@@ -11,9 +11,8 @@ function PostsList(){
     useEffect(() => {
         dispatch(fetchPosts());
     }, [])
-
-
-    const renderedPosts = posts.map((item) => <PostsShow title={item.post_title} content={item.post_content} id={item.post_id} key={item.post_id} />)
+    
+    const renderedPosts = posts.map((item) => <PostsShow title={item.post_title} content={item.post_content} postedBy={item.postedby} id={item.post_id} key={item.post_id} />)
 
     return(
         <div className="post-list">

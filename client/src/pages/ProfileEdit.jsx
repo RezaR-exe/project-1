@@ -1,4 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
+import { fetchUser } from "../store/store";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { editUserData } from "../store/store";
@@ -26,12 +27,14 @@ function ProfileEdit() {
     const handleSubmit = (event) => {
         event.preventDefault();
         dispatch(editUserData({...newUserData, email: user.userData.email}))
+        navigate("/profile")
     }
 
     const handleChange = (event) => {
         switch (event.target.name) {
             case "first_name":
                 setNewUserData({...newUserData, first_name: event.target.value});
+                console.log(newUserData)
                 break;
             case "last_name":
                 setNewUserData({...newUserData, last_name: event.target.value});
@@ -41,6 +44,7 @@ function ProfileEdit() {
                 break;
             case "bio":
                 setNewUserData({...newUserData, bio: event.target.value});
+                console.log(newUserData)
                 break;
             case "birth_date":
                 setNewUserData({...newUserData, birth_date: event.target.value});
@@ -70,7 +74,7 @@ function ProfileEdit() {
                 <input placeholder={user.userData.birth_date} id="birth_date" name="birth_date" type="date" value={newUserData.birth_date} onChange={handleChange} />
 
                 <label htmlFor="location">Location: </label>
-                <input placeholder={user.userData.first_name} id="location" name="location" type="text" value={newUserData.location} onChange={handleChange} />
+                <input placeholder={user.userData.location} id="location" name="location" type="text" value={newUserData.location} onChange={handleChange} />
                 
                 <button>Save</button>
 
