@@ -65,6 +65,7 @@ app.post("/register", async (req, res) => {
                     db.query("INSERT INTO users(email, first_name, last_name, nickname, birth_date, password) VALUES($1, $2, $3, $4, $5, $6)", [req.body.email, req.body.first_name, req.body.last_name, req.body.nickname, req.body.birth_date, req.body.password]);
                     return res.status(200).json({info: "user registered"});
                 } catch(error) {
+                    console.error(error)
                     return res.status(400).json({error: "db error, try again later!"});
                 }
             }
@@ -76,8 +77,22 @@ app.post("/register", async (req, res) => {
 
 
 app.post("/edit-user", async (req, res) => {
-    const updateData = await db.query("UPDATE users SET first_name=$1, last_name=$2, nickname=$3, location=$4, bio=$5, birth_date=$6 WHERE email=$7", [req.body.first_name, req.body.last_name, req.body.nickname, req.body.location, req.body.bio, req.body.birth_date, req.body.email]);
-    return res.status(200).json({info: "User data edited."});
+    try {
+        const splitList = [];
+        for (let objItem in req.body) {
+            if (req.body[objItem] != "") {
+                splitList.push(objItem)
+            } 
+        }
+        splitList.pop();
+        const constructedString = splitList.map((item, index) => `${item}=$${index+1}`).join(", ")
+        await db.query(`UPDATE users SET ${constructedString} WHERE email=$${splitList.length+1}`, [...splitList.map((item) => req.body[item]), req.body.email]);
+        return res.status(200).json({info: "User data edited."});
+    } catch (error) {
+        console.error(error)
+        return res.status(400).json({error: "db error, try again later!"});
+    }
+
 })
 
 

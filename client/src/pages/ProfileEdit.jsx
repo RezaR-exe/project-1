@@ -7,15 +7,8 @@ import { editUserData } from "../store/store";
 
 function ProfileEdit() {
     const dispatch = useDispatch();
-    const [newUserData, setNewUserData] = useState({
-        nickname: "",
-        first_name: "",
-        last_name: "",
-        bio: "",
-        birth_date: "",
-        location: ""
-    })
-    const user = useSelector((state) => state.users)
+    const [newUserData, setNewUserData] = useState({});
+    const user = useSelector((state) => state.users);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -34,7 +27,6 @@ function ProfileEdit() {
         switch (event.target.name) {
             case "first_name":
                 setNewUserData({...newUserData, first_name: event.target.value});
-                console.log(newUserData)
                 break;
             case "last_name":
                 setNewUserData({...newUserData, last_name: event.target.value});
@@ -44,7 +36,6 @@ function ProfileEdit() {
                 break;
             case "bio":
                 setNewUserData({...newUserData, bio: event.target.value});
-                console.log(newUserData)
                 break;
             case "birth_date":
                 setNewUserData({...newUserData, birth_date: event.target.value});
