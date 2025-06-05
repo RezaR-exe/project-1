@@ -2,10 +2,12 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom"
+import PostsShow from "../components/PostsShow";
 
 
 function Profile() {
     const user = useSelector((state) => state.users)
+    const posts = useSelector((state) => state.posts.posts)
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -14,6 +16,7 @@ function Profile() {
         }
     }, [user])
 
+    const renderedUserPosts = posts.map((item) => item.postedby === user.userData.nickname ? <PostsShow title={item.post_title} content={item.post_content} postedBy={item.postedby} id={item.post_id} key={item.post_id} /> : "")
 
     return (
         <div>
@@ -25,6 +28,7 @@ function Profile() {
                 <h3>Born {user.userData.birth_date}</h3>
                 <Link to="/edit-profile"><button>Edit Profile</button></Link>
                 <h3>Posts</h3>
+                {renderedUserPosts}
             </div>
         </div>
     )
